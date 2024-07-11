@@ -6,6 +6,16 @@ import org.testng.AssertJUnit;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
 import org.testng.AssertJUnit;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.AssertJUnit;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
+import org.testng.AssertJUnit;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeClass;
+import org.testng.AssertJUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.Assert;
@@ -16,18 +26,22 @@ import com.github.javafaker.Faker;
 
 import api.endpoints.EndPoints;
 import api.payload.User;
+import io.qameta.allure.testng.AllureTestNg;
 import io.restassured.response.Response;
 
 public class UserTests 
 {
 	Faker faker;
 	User userpayload;
-	
+	public static Logger log;
+
     
     
 	@BeforeClass
 	public void setupData()
 	{
+		log= LogManager.getLogger(UserTests.class);
+		log.info("Setting up data");
 		faker=new Faker();
 		userpayload=new User();
 		userpayload.setId(faker.idNumber().hashCode());
@@ -45,31 +59,34 @@ public class UserTests
 	@Test(priority = 1)
 	public void testPostUser()
 	{
-		System.out.println("******** Creating User *******");
+		log= LogManager.getLogger(UserTests.class);
+		log.info("******* Creating User ******");
 	   Response response=EndPoints.createUser(userpayload);
 	   response.then().log().all();
 	   
 	   AssertJUnit.assertEquals(response.getStatusCode(), 200);
 	   
-	   System.out.println("******** User is Created ********");
+	   log.info("******** User is Created ********");
 	}
 	
 	@Test(priority = 2)
 	public void testGetUserByName()
 	{
+		log= LogManager.getLogger(UserTests.class);
 		
-		System.out.println("******** Reading user Info *********");
+		log.info("******** Reading user Info *********");
 	Response response=EndPoints.readUser(this.userpayload.getUsername());
 	response.then().log().all();
 	AssertJUnit.assertEquals(response.getStatusCode(), 200);
 	
-	System.out.println("******** user Info is displayed *********");
+	log.info("******** user Info is displayed *********");
 	}
 	
 	@Test(priority = 3)
 	public void testUpdateUserByName()
 	{
-		System.out.println("******** Updating user *********");
+		log= LogManager.getLogger(UserTests.class);
+		log.info("******** Updating user *********");
 		//update data using payload
 		userpayload.setFirstName(faker.name().firstName());
 		userpayload.setLastName(faker.name().lastName());
@@ -81,7 +98,7 @@ public class UserTests
 		   
 		   AssertJUnit.assertEquals(response.getStatusCode(), 200);
 		   
-		   System.out.println("******** User is updated *********");
+		   log.info("******** User is updated *********");
 		   
 	// checking data after update	
 		   
@@ -95,6 +112,8 @@ public class UserTests
 	@Test(priority = 4)
 	public void testDeleteUserByName()
 	{
+		log= LogManager.getLogger(UserTests.class);
+		log.info("********* Deleting User ********");
 	Response response=EndPoints.deleteUser(this.userpayload.getUsername());
 	AssertJUnit.assertEquals(response.getStatusCode(), 200);
 	}
